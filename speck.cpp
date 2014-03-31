@@ -8,6 +8,12 @@ void Speck::genKey() {
 	}
 }
 
+void Speck::keyExpansion(){
+	for(int i =0; i < NUMROUNDS - 2; i++){
+	}
+		
+
+}
 int main() {
   uberzahl x; // = 13;
 }
