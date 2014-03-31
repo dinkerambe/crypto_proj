@@ -15,7 +15,7 @@ class Speck {
     Speck();
     void setKey(uberzahl userKey);
 		void genKey();
-    void keyExpansion()
+    void keyExpansion();
     uberzahl encrypt(uberzahl);
     uberzahl decrypt(uberzahl);
   private:
