@@ -2,9 +2,11 @@
 #include "uberzahl.h"
 using namespace std;
 
-#define WORDSIZE 64
-#define NUMKEYWORDS 4
-#define ROUNDS 34
+#define WORDSIZE 64 // n
+#define NUMKEYWORDS 4 // m
+#define ROUNDS 34 // T
+#define ALPHA = 8;
+#define BETA = 3;
 
 class Speck {
   public:
