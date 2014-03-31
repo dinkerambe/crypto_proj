@@ -11,6 +11,9 @@ class Speck {
   private:
     uberzahl key;
     uberzahl * keywords;
+    int wordSize = 64;
+    int keywords = 4;
+    int rounds = 34;
 };
 
 int main() {
