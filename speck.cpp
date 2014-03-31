@@ -2,6 +2,10 @@
 #include "uberzahl.h"
 using namespace std;
 
+#define WORDSIZE 64
+#define NUMKEYWORDS 4
+#define ROUNDS 34
+
 class Speck {
   public:
     Speck();
@@ -11,9 +15,6 @@ class Speck {
   private:
     uberzahl key;
     uberzahl * keywords;
-    int wordSize = 64;
-    int keywords = 4;
-    int rounds = 34;
 };
 
 int main() {
