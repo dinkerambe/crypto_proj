@@ -8,6 +8,13 @@ void Speck::genKey() {
 	}
 }
 
+void Speck::keyExpansion(){
+	for(int i =0; i < NUMROUNDS - 2; i++){
+	}
+		
+
+}
+
 void Speck::setKey(uberzahl theKey) {
   this->key = theKey;
 }

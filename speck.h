@@ -2,12 +2,12 @@
 #include "uberzahl.h"
 using namespace std;
 
-#define WORDSIZE 64 		// n
 #define NUMKEYWORDS 4 	// m
-#define ROUNDS 34 			// T
+#define NUMROUNDS 34 		// T
+#define WORDSIZE 64 		// n
 #define KEYSIZE 128
-#define ALPHA = 8
-#define BETA = 3
+#define ALPHA 8
+#define BETA 3
 
 
 class Speck {
@@ -20,6 +20,6 @@ class Speck {
     uberzahl decrypt(uberzahl);
   private:
     uberzahl key;
-    uberzahl * keywords;
+    uberzahl keywords[NUMKEYWORDS];
 };
 
