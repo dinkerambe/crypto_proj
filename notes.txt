@@ -1,0 +1,8 @@
+QUESTIONS
+--------------
+
+
+
+1. what is 'l'? how do we get K = (l_(m-2)...l(0), k(0))
+2. Key can be random or provided by user?
+3.

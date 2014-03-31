@@ -1,4 +1,4 @@
-#include <speck.h>
+#include "speck.h"
 
 void Speck::genKey() {
 	for(int i = 0; i < KEYSIZE; ++i) {
