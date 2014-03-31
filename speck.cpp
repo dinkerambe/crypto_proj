@@ -10,6 +10,7 @@ class Speck {
   public:
     Speck();
     void setKey(uberzahl);
+    void keyExpansion()
     uberzahl encrypt(uberzahl);
     uberzahl decrypt(uberzahl);
   private:
