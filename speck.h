@@ -16,8 +16,10 @@ class Speck {
     void setKey(uberzahl userKey);
 		void genKey();
     void keyExpansion();
-    uberzahl encrypt(uberzahl);
-    uberzahl decrypt(uberzahl);
+    uberzahl encrypt(uberzahl plaintext);
+    uberzahl decrypt(uberzahl ciphertext);
+    uberzahl encrypt(uberzahl key, uberzahl plaintext);
+    uberzahl decrypt(uberzahl key, uberzahl ciphertext);
   private:
     uberzahl key;
     uberzahl keywords[NUMKEYWORDS];
