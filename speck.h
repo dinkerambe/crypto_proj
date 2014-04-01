@@ -12,13 +12,14 @@ using namespace std;
 #define ALPHA 8
 #define BETA 3
 
-
 class Speck {
   public:
     Speck();
-		void genKey();
+    void genKey();
+    void expand(uberzahl x, uberzahl y, uberzahl k);
+    void setKeyWords();
+    void setKey_all(uberzahl key);
     void setKey(uberzahl userKey);
-    void keyExpansion();
     uberzahl encrypt(uberzahl plaintext);
     uberzahl decrypt(uberzahl ciphertext);
     uberzahl encrypt(uberzahl key, uberzahl plaintext);
