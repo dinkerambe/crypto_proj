@@ -15,7 +15,7 @@ using namespace std;
 class Speck {
   public:
     Speck();
-		void genKey();
+    void genKey();
     void expand(uberzahl x, uberzahl y, uberzahl k);
     void setKeyWords();
     void setKey_all(uberzahl key);
