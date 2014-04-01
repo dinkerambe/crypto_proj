@@ -1,5 +1,7 @@
 #include <iostream>
 #include "uberzahl.h"
+#include <stdlib.h>     /* srand, rand */
+#include <time.h>
 using namespace std;
 
 #define NUMKEYWORDS 4 	// m
@@ -13,8 +15,8 @@ using namespace std;
 class Speck {
   public:
     Speck();
-    void setKey(uberzahl userKey);
 		void genKey();
+    void setKey(uberzahl userKey);
     void keyExpansion();
     uberzahl encrypt(uberzahl plaintext);
     uberzahl decrypt(uberzahl ciphertext);

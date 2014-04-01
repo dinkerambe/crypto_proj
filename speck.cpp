@@ -1,22 +1,26 @@
 #include "speck.h"
 
+Speck::Speck() {
+	genKey();
+}
+
 void Speck::genKey() {
-	for(int i = 0; i < KEYSIZE; ++i) {
-		key << 1;
-		//get random bit
-		//or with key	
+	
+	srand(time(NULL));
+	key.setBit(0);
+	for(int i = 1; i < KEYSIZE; ++i) {
+		key = (key << 1) | (rand() % 2);
 	}
+	//cout << key << endl;
 }
 
 void Speck::keyExpansion(){
 	for(int i =0; i < NUMROUNDS - 2; i++){
 	}
-		
-
 }
 
-void Speck::setKey(uberzahl theKey) {
-  this->key = theKey;
+void Speck::setKey(uberzahl userKey) {
+  this->key = userKey;
 }
 
 uberzahl Speck::encrypt(uberzahl plaintext) {
@@ -31,5 +35,7 @@ uberzahl Speck::encrypt(uberzahl plaintext) {
 }
 
 int main() {
-  uberzahl x; // = 13;
+  Speck speck;	//single instance of speck class
+	uberzahl x; // = 13;
+	//speck.genKey();
 }
