@@ -15,7 +15,7 @@ void Speck::genKey() {
 	//cout << key << endl;
 }
 
-void Speck::expand(uberzahl &x, uberzahl &y, uberzahl &k){
+void Speck::expand(uberzahl &x, uberzahl &y, uberzahl k){
 	x = x.rotateRight(ALPHA,0,WORDSIZE-1);
 	x = x + y;
 	x = x ^ k;
