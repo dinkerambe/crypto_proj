@@ -47,10 +47,10 @@ uberzahl Speck::encrypt(uberzahl plaintext) {
   uberzahl leftKeyWord = keywords[1];
   uberzahl rightKeyWord = keywords[0];
   //This is not correct 
-  for (int i=0; i<NUMROUNDS; i++) {
+  /*for (int i=0; i<NUMROUNDS; i++) {
     left = (left.rotateRight(ALPHA, 0, WORDSIZE) + right) ^ keywords[i];
     right = right.rotateLeft(BETA, 0, WORDSIZE) ^ left;
-  }
+  }*/
   for(int i =0; i < NUMROUNDS-2; i++){
     expand(left,right, rightKeyWord);//encrypt
     expand(leftKeyWord, rightKeyWord, i);
