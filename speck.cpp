@@ -53,7 +53,7 @@ uberzahl Speck::encrypt(uberzahl plaintext) {
   }
   for(int i =0; i < NUMROUNDS-2; i++){
     expand(left,right, rightKeyWord);//encrypt
-    expand(leftKeyWord, rightKeyWord,uberzah(i));
+    expand(leftKeyWord, rightKeyWord,uberzahl(i));
   }
   return (left << WORDSIZE) + right;
 }
