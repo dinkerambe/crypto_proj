@@ -14,7 +14,7 @@ void Speck::genKey() {
 	//cout << key << endl;
 }
 
-void Speck::expand(uberzahl x, uberzahl y, uberzahl k){
+void Speck::expand(uberzahl &x, uberzahl &y, uberzahl &k){
 	x = x.rotateRight(ALPHA,0,WORDSIZE-1);
 	x = x + y;
 	x = x ^ k;
@@ -36,8 +36,8 @@ void Speck::setKeyWords(){
 void Speck::setKey_all(uberzahl key){
 	this->key = key;
 	this->setKeyWords();
-	//cout << "KEY:\t\t" << key<<endl;
-	//cout << "Keywords
+	cout << "KEY:\t\t" << key<<endl;
+	cout << "Keywords:\t"<<keywords[1] << " " << keywords[0]<<endl;
 }
 
 uberzahl Speck::encrypt(uberzahl plaintext) {
