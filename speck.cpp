@@ -15,7 +15,7 @@ void Speck::genKey() {
 	//cout << key << endl;
 }
 
-void Speck::expand(uberzahl &x, uberzahl &y, uberzahl &k){
+void Speck::expand(uberzahl &x, uberzahl &y, uberzahl k){
 	x = x.rotateRight(ALPHA,0,WORDSIZE-1);
 	x = x + y;
 	x = x ^ k;
@@ -53,7 +53,7 @@ uberzahl Speck::encrypt(uberzahl plaintext) {
   }*/
   for(int i =0; i < NUMROUNDS-2; i++){
     expand(left,right, rightKeyWord);//encrypt
-    expand(leftKeyWord, rightKeyWord, i);
+    expand(leftKeyWord, rightKeyWord,uberzahl(i));
   }
   return (left << WORDSIZE) + right;
 }
