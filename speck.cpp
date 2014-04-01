@@ -37,6 +37,8 @@ void Speck::setKeyWords(){
 void Speck::setKey_all(uberzahl key){
 	this->key = key;
 	this->setKeyWords();
+	//cout << "KEY:\t\t" << key<<endl;
+	//cout << "Keywords
 }
 
 uberzahl Speck::encrypt(uberzahl plaintext) {
@@ -50,7 +52,7 @@ uberzahl Speck::encrypt(uberzahl plaintext) {
     right = right.rotateLeft(BETA, 0, WORDSIZE) ^ left;
   }
   for(int i =0; i < NUMROUNDS-2; i++){
-    expand(left,right, keywords[0]);//encrypt
+    expand(left,right, rightKeyWord);//encrypt
     expand(leftKeyWord, rightKeyWord, i);
   }
   return (left << WORDSIZE) + right;
