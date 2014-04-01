@@ -24,10 +24,6 @@ void Speck::expand(uberzahl x, uberzahl y, uberzahl k){
 
 void Speck::setKey(uberzahl userKey) {
   this->key = userKey;
-  // For testing:
-  for (int i=0; i<NUMROUNDS; i++) {
-    keywords[i] = i;
-  }
 }
 
 void Speck::setKeyWords(){
@@ -37,7 +33,7 @@ void Speck::setKeyWords(){
 	}
 }
 
-void Speck::setKey_All(uberzahl key){
+void Speck::setKey_all(uberzahl key){
 	this->key = key;
 	this->setKeyWords();
 }
