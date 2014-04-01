@@ -8,15 +8,28 @@ void Speck::genKey() {
 	}
 }
 
-void Speck::keyExpansion(){
-	for(int i =0; i < NUMROUNDS - 2; i++){
-	}
-		
-
+void Speck::rotate(uberzahl x, uberzahl y, uberzahl k){
+	x = x.rotateRight(ALPHA,0,WORDSIZE-1);
+	x = x + y;
+	x = x ^ k;
+	y = y.rotateLeft(BETA,0, WORDSIZE-1);
+	y = y ^ x;	
 }
 
 void Speck::setKey(uberzahl theKey) {
   this->key = theKey;
+}
+
+void Speck::setKeyWords(){
+	for(int i =0; i < NUMKEYWORDS; i++){
+		keywords[i] = key;
+		keywords[i] = (keywords[i] >> (WORDSIZE*i));	
+	}
+}
+
+void Speck::setKey_All(uberzahl key){
+	this->key = key;
+	this->setKeyWords();
 }
 
 uberzahl Speck::encrypt(uberzahl plaintext) {
