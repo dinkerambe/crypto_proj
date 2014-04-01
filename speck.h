@@ -4,7 +4,7 @@
 #include <time.h>
 using namespace std;
 
-#define NUMKEYWORDS 4 	// m
+#define NUMKEYWORDS 2 	// m
 #define NUMROUNDS 34 		// T
 #define WORDSIZE 64 		// n
 #define KEYSIZE 128
