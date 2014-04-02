@@ -27,6 +27,7 @@ class Speck {
     uberzahl decrypt(uberzahl key, uberzahl ciphertext);
   private:
     uberzahl key;
-    uberzahl keywords[NUMROUNDS];
+    uberzahl keywords[NUMKEYWORDS];
+    uberzahl rounds[NUMROUNDS];
 };
 

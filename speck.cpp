@@ -32,43 +32,56 @@ void Speck::setKeyWords(){
 void Speck::setKey_all(uberzahl userKey){
 	setKey(userKey);
 	setKeyWords();
-	cout<< "KEY:\t\t" << key << endl;
-	cout<< "Keywords:\t" << keywords[1] << " " << keywords[0] << endl;
+
+  uberzahl leftKeyWord = keywords[1];
+  uberzahl rightKeyWord = keywords[0];
+  
+  // Shift keywords and store for later
+  for(int i = 0; i < NUMROUNDS; i++){
+    rounds[i] = rightKeyWord;
+    expand(leftKeyWord, rightKeyWord, uberzahl(i));
+  }
+  
+	///cout<< "KEY:\t\t" << key << endl;
+	///cout<< "Keywords:\t" << keywords[1] << " " << keywords[0] << endl;
 }
 
 void Speck::expand(uberzahl &x, uberzahl &y, uberzahl k){
 	x = x.rotateRight(ALPHA, 0, WORDSIZE - 1);	
 	x = x + y;
+	x = x & ( (uberzahl("1") << WORDSIZE) - 1);
 	x = x ^ k;
 	x = x & ( (uberzahl("1") << WORDSIZE) - 1);
 	y = y.rotateLeft(BETA, 0, WORDSIZE - 1);
 	y = y ^ x;	
 	y = y & ( (uberzahl("1") << WORDSIZE) - 1);
-	
+}
+
+void Speck::contract(uberzahl &x, uberzahl &y, uberzahl k){
+	y = y ^ x;	
+	y = y & ( (uberzahl("1") << WORDSIZE) - 1);
+	y = y.rotateRight(BETA, 0, WORDSIZE - 1);
+	x = x ^ k;
+	x = x & ( (uberzahl("1") << WORDSIZE) - 1);
+	if (x<y) {
+	  x = (uberzahl("1") << WORDSIZE) - (y-x);
+	} else {
+  	x = x - y;
+  }
+	x = x & ( (uberzahl("1") << WORDSIZE) - 1);
+	x = x.rotateLeft(ALPHA, 0, WORDSIZE - 1);
 }
 
 uberzahl Speck::encrypt(uberzahl plaintext) {
   uberzahl left = plaintext >> WORDSIZE;
   uberzahl right = plaintext & ( (uberzahl("1") << WORDSIZE) - 1);
-  uberzahl leftKeyWord = keywords[1];
-  uberzahl rightKeyWord = keywords[0];
 
 
   for(int i = 0; i < NUMROUNDS; i++){
-    expand(left, right, rightKeyWord);				//encrypt
-		uberzahl tempkey(i);
-    expand(leftKeyWord, rightKeyWord, tempkey);
+    expand(left, right, rounds[i]);				//encrypt
   }
   cout <<"Separated Result " << left << " " << right << endl;
   return (left << WORDSIZE) | right;
-
-
-	/* old method -- incorrect
-	for(int i = 0; i < NUMROUNDS; i++) {
-		left = (left.rotateRight(ALPHA 0, WORDSIZE) + right) ^ keywords[i];
-		right = right.rotateLeft(BETA, 0, WORDSIZE) ^ left;
-	}	
-	*/
 }
 
 uberzahl Speck::decrypt(uberzahl ciphertext) {
@@ -76,11 +89,7 @@ uberzahl Speck::decrypt(uberzahl ciphertext) {
   uberzahl right = ciphertext & ((uberzahl("1")<<WORDSIZE)-1);
   
   for (int i=NUMROUNDS-1; i>=0; i--) {
-    right = right ^ left;
-    right = right.rotateRight(BETA, 0, WORDSIZE);
-    left = left ^ keywords[i];
-    left = left - right;
-    left = left.rotateLeft(ALPHA, 0, WORDSIZE);
+    contract(left, right, rounds[i]);
   }
   return (left << WORDSIZE) + right;
 }
@@ -112,7 +121,7 @@ int main() {
   cout << "Expected ciphertext:\t" << cipher << endl 
 				<< "Resulting ciphertext:\t" << testcipher << endl;
 
-  uberzahl testplain = speck.decrypt(key, cipher);
+  uberzahl testplain = speck.decrypt(key, testcipher);
   cout << "Expected plaintext:\t" << plain << endl 
 			 << "Result plaintext:\t" << testplain << endl;
 
