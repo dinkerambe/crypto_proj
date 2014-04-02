@@ -22,7 +22,7 @@ void Speck::setKey(uberzahl userKey) {
 void Speck::setKeyWords(){
 	for(int i = 0; i < NUMKEYWORDS; ++i){
 		keywords[i] = key;
-		keywords[i] = (keywords[i] >> (WORDSIZE*i));	
+		keywords[i] = (keywords[i] >> (WORDSIZE*(i)));//NUMKEYWORDS - 1 - i 	
 		for(int j = WORDSIZE; j < KEYSIZE; ++j) {
 			keywords[i].clearBit(j);
 		}
@@ -32,16 +32,19 @@ void Speck::setKeyWords(){
 void Speck::setKey_all(uberzahl userKey){
 	setKey(userKey);
 	setKeyWords();
-	cout << "KEY:\t\t" << key << endl;
-	cout << "Keywords:\t" << keywords[1] << " " << keywords[0] << endl;
+	cout<< "KEY:\t\t" << key << endl;
+	cout<< "Keywords:\t" << keywords[1] << " " << keywords[0] << endl;
 }
 
 void Speck::expand(uberzahl &x, uberzahl &y, uberzahl &k){
 	x = x.rotateRight(ALPHA, 0, WORDSIZE - 1);	
 	x = x + y;
 	x = x ^ k;
+	x = x & ( (uberzahl("1") << WORDSIZE) - 1);
 	y = y.rotateLeft(BETA, 0, WORDSIZE - 1);
 	y = y ^ x;	
+	y = y & ( (uberzahl("1") << WORDSIZE) - 1);
+	
 }
 
 uberzahl Speck::encrypt(uberzahl plaintext) {
@@ -50,11 +53,13 @@ uberzahl Speck::encrypt(uberzahl plaintext) {
   uberzahl leftKeyWord = keywords[1];
   uberzahl rightKeyWord = keywords[0];
 
+
   for(int i = 0; i < NUMROUNDS; i++){
     expand(left, right, rightKeyWord);				//encrypt
 		uberzahl tempkey(i);
     expand(leftKeyWord, rightKeyWord, tempkey);
   }
+  cout <<"Separated Result " << left << " " << right << endl;
   return (left << WORDSIZE) | right;
 
 
@@ -99,7 +104,7 @@ int main() {
  // uberzahl plain = "144062678019685919772856771483193666848";
   
 	
-  uberzahl key = "765936825516008500000000000000000";
+  uberzahl key = "20011376718272490338853433276725592320";
   uberzahl cipher = "221137820289473687857657110085594713368";
   uberzahl plain = "144062678019685919772856771483193666848";
   

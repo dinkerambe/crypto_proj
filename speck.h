@@ -5,7 +5,7 @@
 using namespace std;
 
 #define NUMKEYWORDS 2 	// m
-#define NUMROUNDS 34 		// T
+#define NUMROUNDS 32 		// T
 #define WORDSIZE 64 		// n
 #define BLOCKSIZE 128
 #define KEYSIZE 128
