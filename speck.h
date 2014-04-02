@@ -17,6 +17,7 @@ class Speck {
     Speck();
     void genKey();
     void expand(uberzahl &x, uberzahl &y, uberzahl k);
+    void contract(uberzahl &x, uberzahl &y, uberzahl k);
     void setKeyWords();
     void setKey_all(uberzahl key);
     void setKey(uberzahl userKey);

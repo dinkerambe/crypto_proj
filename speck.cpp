@@ -23,6 +23,14 @@ void Speck::expand(uberzahl &x, uberzahl &y, uberzahl k){
 	y = y ^ x;	
 }
 
+void Speck::contract(uberzahl &x, uberzahl &y, uberzahl k){
+	y = y ^ x;
+	y = y.rotateRight(BETA,0, WORDSIZE-1);
+	x = x ^ k;
+	x = x - y;
+	x = x.rotateLeft(ALPHA,0,WORDSIZE-1);
+}
+
 void Speck::setKey(uberzahl userKey) {
   this->key = userKey;
 }
@@ -44,6 +52,8 @@ void Speck::setKey_all(uberzahl key){
 uberzahl Speck::encrypt(uberzahl plaintext) {
   uberzahl left = plaintext >> WORDSIZE;
   uberzahl right = plaintext & ((uberzahl("1")<<WORDSIZE)-1);
+  cout << "PLAINTEXT " << plaintext << endl;
+  cout << "left and right " << left << " " << right << endl;
   uberzahl leftKeyWord = keywords[1];
   uberzahl rightKeyWord = keywords[0];
   //This is not correct 
@@ -51,7 +61,7 @@ uberzahl Speck::encrypt(uberzahl plaintext) {
     left = (left.rotateRight(ALPHA, 0, WORDSIZE) + right) ^ keywords[i];
     right = right.rotateLeft(BETA, 0, WORDSIZE) ^ left;
   }*/
-  for(int i =0; i < NUMROUNDS-2; i++){
+  for(int i =0; i < NUMROUNDS; i++){
     expand(left,right, rightKeyWord);//encrypt
     expand(leftKeyWord, rightKeyWord,uberzahl(i));
   }
@@ -61,13 +71,16 @@ uberzahl Speck::encrypt(uberzahl plaintext) {
 uberzahl Speck::decrypt(uberzahl ciphertext) {
   uberzahl left = ciphertext >> WORDSIZE;
   uberzahl right = ciphertext & ((uberzahl("1")<<WORDSIZE)-1);
-  
+  uberzahl leftKeyWord = keywords[1];
+  uberzahl rightKeyWord = keywords[0];
+  //This is not correct 
+  /*for (int i=0; i<NUMROUNDS; i++) {
+    left = (left.rotateRight(ALPHA, 0, WORDSIZE) + right) ^ keywords[i];
+    right = right.rotateLeft(BETA, 0, WORDSIZE) ^ left;
+  }*/
   for (int i=NUMROUNDS-1; i>=0; i--) {
-    right = right ^ left;
-    right = right.rotateRight(BETA, 0, WORDSIZE);
-    left = left ^ keywords[i];
-    left = left - right;
-    left = left.rotateLeft(ALPHA, 0, WORDSIZE);
+    contract(leftKeyWord, rightKeyWord,uberzahl(i));
+    contract(left,right, rightKeyWord);//encrypt
   }
   return (left << WORDSIZE) + right;
 }
@@ -85,12 +98,18 @@ uberzahl Speck::decrypt(uberzahl key, uberzahl ciphertext) {
 int main() {
   Speck speck;	//single instance of speck class
 	uberzahl x; // = 13;
+	
+  uberzahl omg = (uberzahl("1")<<64)-1;
+  cout << "FISRST " << omg <<endl;
+  omg = omg.rotateLeft(1, 0, 63);
+  cout << "WTF OM G " << omg <<endl;
 	//speck.genKey();
   uberzahl key = "20011376718272490338853433276725592320";
   uberzahl cipher = "147139012391338450886016132908936943925";
   uberzahl plain = "144062678019685919772856771483193666848";
+  cout << "plain is "<< (uberzahl("1")<<64)+uberzahl("1") <<endl;
   
-  uberzahl testcipher = speck.encrypt(plain);
+  uberzahl testcipher = speck.encrypt(69696969);//plain);
   cout << "expected: " << cipher << endl << "result:   " << testcipher << endl;
   uberzahl testplain = speck.decrypt(testcipher);
   cout << "expected: " << plain << endl << "result:   " << testplain << endl;
