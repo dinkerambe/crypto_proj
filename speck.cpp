@@ -36,7 +36,7 @@ void Speck::setKey_all(uberzahl userKey){
 	cout<< "Keywords:\t" << keywords[1] << " " << keywords[0] << endl;
 }
 
-void Speck::expand(uberzahl &x, uberzahl &y, uberzahl &k){
+void Speck::expand(uberzahl &x, uberzahl &y, uberzahl k){
 	x = x.rotateRight(ALPHA, 0, WORDSIZE - 1);	
 	x = x + y;
 	x = x ^ k;
