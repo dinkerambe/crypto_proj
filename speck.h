@@ -19,7 +19,7 @@ class Speck {
     void expand(uberzahl &x, uberzahl &y, uberzahl k);
     void contract(uberzahl &x, uberzahl &y, uberzahl k);
     void setKeyWords();
-    void setKey_all(uberzahl key);
+    void setKey_all(uberzahl userKey);
     void setKey(uberzahl userKey);
     uberzahl encrypt(uberzahl plaintext);
     uberzahl decrypt(uberzahl ciphertext);
