@@ -26,6 +26,7 @@ class Speck {
     uberzahl encrypt(uberzahl key, uberzahl plaintext);
     uberzahl decrypt(uberzahl key, uberzahl ciphertext);
   private:
+    uberzahl trimmedNum(uberzahl num, int bits);
     uberzahl key;
     uberzahl keywords[NUMKEYWORDS];
     uberzahl rounds[NUMROUNDS];

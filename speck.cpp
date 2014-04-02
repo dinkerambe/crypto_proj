@@ -4,6 +4,10 @@ Speck::Speck() {
 	genKey();
 }
 
+uberzahl Speck::trimmedNum(uberzahl num, int bits) {
+  return num & ( (uberzahl("1") << bits) - 1);
+}
+
 void Speck::genKey() {
 	
 	srand(time(NULL));
@@ -49,32 +53,32 @@ void Speck::setKey_all(uberzahl userKey){
 void Speck::expand(uberzahl &x, uberzahl &y, uberzahl k){
 	x = x.rotateRight(ALPHA, 0, WORDSIZE - 1);	
 	x = x + y;
-	x = x & ( (uberzahl("1") << WORDSIZE) - 1);
+	//x = trimmedNum(x, WORDSIZE);
 	x = x ^ k;
-	x = x & ( (uberzahl("1") << WORDSIZE) - 1);
+	x = trimmedNum(x, WORDSIZE);
 	y = y.rotateLeft(BETA, 0, WORDSIZE - 1);
 	y = y ^ x;	
-	y = y & ( (uberzahl("1") << WORDSIZE) - 1);
+	y = trimmedNum(y, WORDSIZE);
 }
 
 void Speck::contract(uberzahl &x, uberzahl &y, uberzahl k){
 	y = y ^ x;	
-	y = y & ( (uberzahl("1") << WORDSIZE) - 1);
+	y = trimmedNum(y, WORDSIZE);
 	y = y.rotateRight(BETA, 0, WORDSIZE - 1);
 	x = x ^ k;
-	x = x & ( (uberzahl("1") << WORDSIZE) - 1);
+	x = trimmedNum(x, WORDSIZE);
 	if (x<y) {
 	  x = (uberzahl("1") << WORDSIZE) - (y-x);
 	} else {
   	x = x - y;
   }
-	x = x & ( (uberzahl("1") << WORDSIZE) - 1);
+	//x = trimmedNum(x, WORDSIZE);
 	x = x.rotateLeft(ALPHA, 0, WORDSIZE - 1);
 }
 
 uberzahl Speck::encrypt(uberzahl plaintext) {
   uberzahl left = plaintext >> WORDSIZE;
-  uberzahl right = plaintext & ( (uberzahl("1") << WORDSIZE) - 1);
+  uberzahl right = trimmedNum(plaintext, WORDSIZE);
 
 
   for(int i = 0; i < NUMROUNDS; i++){
@@ -86,7 +90,7 @@ uberzahl Speck::encrypt(uberzahl plaintext) {
 
 uberzahl Speck::decrypt(uberzahl ciphertext) {
   uberzahl left = ciphertext >> WORDSIZE;
-  uberzahl right = ciphertext & ((uberzahl("1")<<WORDSIZE)-1);
+  uberzahl right = trimmedNum(ciphertext, WORDSIZE);
   
   for (int i=NUMROUNDS-1; i>=0; i--) {
     contract(left, right, rounds[i]);
@@ -107,23 +111,49 @@ uberzahl Speck::decrypt(uberzahl key, uberzahl ciphertext) {
 int main() {
   Speck speck;	//single instance of speck class
 	uberzahl x; // = 13;
-	//speck.genKey();
- // uberzahl key = "20011376718272490338853433276725592320";
- // uberzahl cipher = "147139012391338450886016132908936943925";
- // uberzahl plain = "144062678019685919772856771483193666848";
-  
 	
-  uberzahl key = "20011376718272490338853433276725592320";
-  uberzahl cipher = "221137820289473687857657110085594713368";
-  uberzahl plain = "144062678019685919772856771483193666848";
+  const int testVectorLen = 7;
+  uberzahl key[testVectorLen], cipher[testVectorLen], plain[testVectorLen];
+	
+  key[0] = "20011376718272490338853433276725592320";
+  cipher[0] = "221137820289473687857657110085594713368";
+  plain[0] = "144062678019685919772856771483193666848";
+	
+  key[1] = "0";
+  cipher[1] = "1000444146172915417172513437297852742";
+  plain[1] = "144062678019685919772856771483193666848";
+	
+  key[2] = "1";
+  cipher[2] = "197518563100430107023787069588039329421";
+  plain[2] = "152037107215241021449068138290853736037";
+	
+  key[3] = "1442304682729575737805390361686";
+  cipher[3] = "32096542000650209713025123876611961071";
+  plain[3] = "111111111111111111111111111111111";
+	
+  key[4] = "12345678901234567890123456";
+  cipher[4] = "215825222094735503735129327493762389553";
+  plain[4] = "111111111111111111111111111111111";
+	
+  key[5] = "5176156079219501789779";
+  cipher[5] = "84750170069882828649038465849818186684";
+  plain[5] = "1189998819991197253";
+	
+  key[6] = "1189998819991197253";
+  cipher[6] = "132247081460443199909686876827324754061";
+  plain[6] = "1189998819991197253";
   
-  uberzahl testcipher = speck.encrypt(key, plain);
-  cout << "Expected ciphertext:\t" << cipher << endl 
-				<< "Resulting ciphertext:\t" << testcipher << endl;
+  for (int i=0; i<testVectorLen; i++) {
+  
+    uberzahl testcipher = speck.encrypt(key[i], plain[i]);
+    cout << "Expected ciphertext:\t" << cipher[i] << endl 
+          << "Resulting ciphertext:\t" << testcipher << endl;
 
-  uberzahl testplain = speck.decrypt(key, testcipher);
-  cout << "Expected plaintext:\t" << plain << endl 
-			 << "Result plaintext:\t" << testplain << endl;
+    uberzahl testplain = speck.decrypt(key[i], testcipher);
+    cout << "Expected plaintext:\t" << plain[i] << endl 
+         << "Result plaintext:\t" << testplain << endl;
+    cout << "-----------------------------------------" << endl;
+  }
 
 	return 0;
 }
