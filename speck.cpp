@@ -121,15 +121,19 @@ int main() {
     for (int j=0; j<numsPerSize; j++) {
       speck.setKey(key[i*numsPerSize+j]);
       for (int k=0; k<numsPerSize; k++) {
-        speck.encrypt(key[i*numsPerSize+k]);
-        speck.decrypt(key[i*numsPerSize+k]);
+        uberzahl cipher = speck.encrypt(key[i*numsPerSize+k]);
+        uberzahl plain = speck.decrypt(cipher);
+        if (key[i*numsPerSize+k] != plain) {
+          cout << "WE DONE GOOFED" << endl;
+          break;
+        }
       }
     }
     end = clock();
     int average = (end-start)*1000.0/numsPerSize/numsPerSize/CLOCKS_PER_SEC;
     cout << average << " ms for " << (4<<i) << " bits"<<endl;
   }
-	*/
+  */
 	
   const int testVectorLen = 7;
   uberzahl key[testVectorLen], cipher[testVectorLen], plain[testVectorLen];
