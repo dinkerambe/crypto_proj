@@ -12,6 +12,8 @@ using namespace std;
 #define ALPHA 8
 #define BETA 3
 
+uberzahl trimmedNum(uberzahl num, int bits);
+
 class Speck {
   public:
     Speck();
@@ -22,7 +24,6 @@ class Speck {
     uberzahl encrypt(uberzahl key, uberzahl plaintext);
     uberzahl decrypt(uberzahl key, uberzahl ciphertext);
   private:
-    uberzahl trimmedNum(uberzahl num, int bits);
     void expand(uberzahl &x, uberzahl &y, uberzahl k);
     void contract(uberzahl &x, uberzahl &y, uberzahl k);
     uberzahl key;

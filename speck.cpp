@@ -4,7 +4,7 @@ Speck::Speck() {
 }
 
 // Returns number trimmed to the number of least significant bits specified
-uberzahl Speck::trimmedNum(uberzahl num, int bits) {
+uberzahl trimmedNum(uberzahl num, int bits) {
   return num & ( (uberzahl("1") << bits) - 1);
 }
 
@@ -102,7 +102,34 @@ uberzahl Speck::decrypt(uberzahl key, uberzahl ciphertext) {
 
 int main() {
   Speck speck;
-	uberzahl x;
+  
+  // PERFORMANCE TESTING CODE
+  // Uncomment to run. Should take ~5 seconds total.
+  /*
+  uberzahl key[6*15];
+  int numsPerSize = 15;
+  for (int i=0; i<6; i++) {
+    for (int j=0; j<numsPerSize; j++) {
+      key[i*numsPerSize+j] = trimmedNum(speck.genKey(), 4<<i);
+    }
+  }
+  
+  clock_t start,end;
+  
+  for (int i=0; i<6; i++) {
+    start = clock();
+    for (int j=0; j<numsPerSize; j++) {
+      speck.setKey(key[i*numsPerSize+j]);
+      for (int k=0; k<numsPerSize; k++) {
+        speck.encrypt(key[i*numsPerSize+k]);
+        speck.decrypt(key[i*numsPerSize+k]);
+      }
+    }
+    end = clock();
+    int average = (end-start)*1000.0/numsPerSize/numsPerSize/CLOCKS_PER_SEC;
+    cout << average << " ms for " << (4<<i) << " bits"<<endl;
+  }
+	*/
 	
   const int testVectorLen = 7;
   uberzahl key[testVectorLen], cipher[testVectorLen], plain[testVectorLen];
@@ -136,7 +163,6 @@ int main() {
   plain[6] = "1189998819991197253";
   
   for (int i=0; i<testVectorLen; i++) {
-  
     uberzahl testcipher = speck.encrypt(key[i], plain[i]);
     cout << "Expected ciphertext:\t" << cipher[i] << endl 
           << "Resulting ciphertext:\t" << testcipher << endl;
@@ -145,6 +171,11 @@ int main() {
     cout << "Expected plaintext:\t" << plain[i] << endl 
          << "Result plaintext:\t" << testplain << endl;
     cout << "-----------------------------------------" << endl;
+    
+    if (testcipher != cipher[i] || testplain != plain[i]) {
+      cout << "Inconsistency detected. Aborting." << endl;
+      break;
+    }
   }
 
 	return 0;
