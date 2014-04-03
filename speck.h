@@ -18,8 +18,6 @@ class Speck {
     void genKey();
     void expand(uberzahl &x, uberzahl &y, uberzahl k);
     void contract(uberzahl &x, uberzahl &y, uberzahl k);
-    void setKeyWords();
-    void setKey_all(uberzahl userKey);
     void setKey(uberzahl userKey);
     uberzahl encrypt(uberzahl plaintext);
     uberzahl decrypt(uberzahl ciphertext);
@@ -28,7 +26,6 @@ class Speck {
   private:
     uberzahl trimmedNum(uberzahl num, int bits);
     uberzahl key;
-    uberzahl keywords[NUMKEYWORDS];
     uberzahl rounds[NUMROUNDS];
 };
 

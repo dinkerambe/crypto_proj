@@ -15,39 +15,21 @@ void Speck::genKey() {
 	for(int i = 1; i < KEYSIZE; ++i) {
 		key = (key << 1) | (rand() % 2);
 	}
-	//setKey_all(key);
+	//setKey(key);
 	//cout << key << endl;
 }
 
 void Speck::setKey(uberzahl userKey) {
   this->key = userKey;
-}
 
-void Speck::setKeyWords(){
-	for(int i = 0; i < NUMKEYWORDS; ++i){
-		keywords[i] = key;
-		keywords[i] = (keywords[i] >> (WORDSIZE*(i)));//NUMKEYWORDS - 1 - i 	
-		for(int j = WORDSIZE; j < KEYSIZE; ++j) {
-			keywords[i].clearBit(j);
-		}
-	}
-}
-
-void Speck::setKey_all(uberzahl userKey){
-	setKey(userKey);
-	setKeyWords();
-
-  uberzahl leftKeyWord = keywords[1];
-  uberzahl rightKeyWord = keywords[0];
+  uberzahl leftKeyWord = key >> WORDSIZE;
+  uberzahl rightKeyWord = trimmedNum(key, WORDSIZE);
   
   // Shift keywords and store for later
   for(int i = 0; i < NUMROUNDS; i++){
     rounds[i] = rightKeyWord;
     expand(leftKeyWord, rightKeyWord, uberzahl(i));
   }
-  
-	///cout<< "KEY:\t\t" << key << endl;
-	///cout<< "Keywords:\t" << keywords[1] << " " << keywords[0] << endl;
 }
 
 void Speck::expand(uberzahl &x, uberzahl &y, uberzahl k){
@@ -99,12 +81,12 @@ uberzahl Speck::decrypt(uberzahl ciphertext) {
 }
 
 uberzahl Speck::encrypt(uberzahl key, uberzahl plaintext) {
-  setKey_all(key);
+  setKey(key);
   return encrypt(plaintext);
 }
 
 uberzahl Speck::decrypt(uberzahl key, uberzahl ciphertext) {
-  setKey_all(key);
+  setKey(key);
   return decrypt(ciphertext);
 }
 
