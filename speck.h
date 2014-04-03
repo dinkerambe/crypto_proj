@@ -15,9 +15,7 @@ using namespace std;
 class Speck {
   public:
     Speck();
-    void genKey();
-    void expand(uberzahl &x, uberzahl &y, uberzahl k);
-    void contract(uberzahl &x, uberzahl &y, uberzahl k);
+    uberzahl genKey();
     void setKey(uberzahl userKey);
     uberzahl encrypt(uberzahl plaintext);
     uberzahl decrypt(uberzahl ciphertext);
@@ -25,6 +23,8 @@ class Speck {
     uberzahl decrypt(uberzahl key, uberzahl ciphertext);
   private:
     uberzahl trimmedNum(uberzahl num, int bits);
+    void expand(uberzahl &x, uberzahl &y, uberzahl k);
+    void contract(uberzahl &x, uberzahl &y, uberzahl k);
     uberzahl key;
     uberzahl rounds[NUMROUNDS];
 };

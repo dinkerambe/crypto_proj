@@ -1,37 +1,42 @@
 #include "speck.h"
 
 Speck::Speck() {
-	genKey();
 }
 
+// Returns number trimmed to the number of least significant bits specified
 uberzahl Speck::trimmedNum(uberzahl num, int bits) {
   return num & ( (uberzahl("1") << bits) - 1);
 }
 
-void Speck::genKey() {
-	
+// Generates and returns random 128-bit key
+uberzahl Speck::genKey() {
 	srand(time(NULL));
-	key.setBit(0);
+	uberzahl tempKey;
+	tempKey.setBit(0);
 	for(int i = 1; i < KEYSIZE; ++i) {
-		key = (key << 1) | (rand() % 2);
+		tempKey = (tempKey << 1) | (rand() % 2);
 	}
-	//setKey(key);
-	//cout << key << endl;
+	return tempKey;
 }
 
+// Sets key used for encryption and decryption
+// Performs key expansion and stores results for future use
 void Speck::setKey(uberzahl userKey) {
-  this->key = userKey;
+  if (userKey != key) {
+    key = userKey;
 
-  uberzahl leftKeyWord = key >> WORDSIZE;
-  uberzahl rightKeyWord = trimmedNum(key, WORDSIZE);
+    uberzahl leftKeyWord = key >> WORDSIZE;
+    uberzahl rightKeyWord = trimmedNum(key, WORDSIZE);
   
-  // Shift keywords and store for later
-  for(int i = 0; i < NUMROUNDS; i++){
-    rounds[i] = rightKeyWord;
-    expand(leftKeyWord, rightKeyWord, uberzahl(i));
+    // Shift keywords and store for later
+    for(int i = 0; i < NUMROUNDS; i++){
+      rounds[i] = rightKeyWord;
+      expand(leftKeyWord, rightKeyWord, uberzahl(i));
+    }
   }
 }
 
+// Key/text expansion function used every round; modifies x and y
 void Speck::expand(uberzahl &x, uberzahl &y, uberzahl k){
 	x = x.rotateRight(ALPHA, 0, WORDSIZE - 1);	
 	x = x + y;
@@ -43,6 +48,7 @@ void Speck::expand(uberzahl &x, uberzahl &y, uberzahl k){
 	y = trimmedNum(y, WORDSIZE);
 }
 
+// Inverse of key/text expansion function used every round; modifies x and y
 void Speck::contract(uberzahl &x, uberzahl &y, uberzahl k){
 	y = y ^ x;	
 	y = trimmedNum(y, WORDSIZE);
@@ -54,22 +60,23 @@ void Speck::contract(uberzahl &x, uberzahl &y, uberzahl k){
 	} else {
   	x = x - y;
   }
-	//x = trimmedNum(x, WORDSIZE);
 	x = x.rotateLeft(ALPHA, 0, WORDSIZE - 1);
 }
 
+// Encrypts given plaintext using existing key; returns cipher text
 uberzahl Speck::encrypt(uberzahl plaintext) {
   uberzahl left = plaintext >> WORDSIZE;
   uberzahl right = trimmedNum(plaintext, WORDSIZE);
-
-
-  for(int i = 0; i < NUMROUNDS; i++){
-    expand(left, right, rounds[i]);				//encrypt
+  
+  for(int i=0; i <NUMROUNDS; i++){
+    expand(left, right, rounds[i]);
   }
-  cout <<"Separated Result " << left << " " << right << endl;
+  
   return (left << WORDSIZE) | right;
 }
 
+
+// Decrypts given ciphertext using existing key; returns plaintext
 uberzahl Speck::decrypt(uberzahl ciphertext) {
   uberzahl left = ciphertext >> WORDSIZE;
   uberzahl right = trimmedNum(ciphertext, WORDSIZE);
@@ -77,22 +84,25 @@ uberzahl Speck::decrypt(uberzahl ciphertext) {
   for (int i=NUMROUNDS-1; i>=0; i--) {
     contract(left, right, rounds[i]);
   }
+  
   return (left << WORDSIZE) + right;
 }
 
+// Sets key and performs encryption
 uberzahl Speck::encrypt(uberzahl key, uberzahl plaintext) {
   setKey(key);
   return encrypt(plaintext);
 }
 
+// Sets key and performs encryption
 uberzahl Speck::decrypt(uberzahl key, uberzahl ciphertext) {
   setKey(key);
   return decrypt(ciphertext);
 }
 
 int main() {
-  Speck speck;	//single instance of speck class
-	uberzahl x; // = 13;
+  Speck speck;
+	uberzahl x;
 	
   const int testVectorLen = 7;
   uberzahl key[testVectorLen], cipher[testVectorLen], plain[testVectorLen];
